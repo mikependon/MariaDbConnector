@@ -1,7 +1,7 @@
 # MariaDbConnector
 
 ```diff
-This is not the official .NET provider from MariaDB. It is just a thin wrapper and DB-types mapper from MySql.Data. Use with your own disclaimer.
+- This is not the official .NET provider from MariaDB. It is just a thin wrapper and DB-types mapper from MySql.Data. Use with your own disclaimer.
 ```
 
 **MariaDbConnector** is a lightweight, modern, and open-source **ADO.NET data provider for MariaDB**, built for .NET applications.
