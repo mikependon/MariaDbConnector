@@ -1,9 +1,4 @@
-using MariaDbConnector;
-using MySql.Data.MySqlClient;
-using RepoDb.MariaDb.BulkOperations.IntegrationTests;
-using RepoDb.MariaDb.BulkOperations.IntegrationTests.Models;
-
-namespace RepoDb.IntegrationTests.Setup
+namespace MariaDbConnector.IntegrationTests.Setup
 {
     /// <summary>
     /// A class used as a startup setup for the RepoDb MariaDb bulk-operations test database.

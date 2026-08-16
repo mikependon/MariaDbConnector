@@ -1,4 +1,4 @@
-namespace RepoDb.MariaDb.BulkOperations.IntegrationTests.Models
+namespace MariaDbConnector.IntegrationTests.Models
 {
     public class InsertModel
     {

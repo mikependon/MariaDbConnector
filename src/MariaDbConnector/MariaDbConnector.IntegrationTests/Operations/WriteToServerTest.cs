@@ -1,8 +1,7 @@
-using MariaDbConnector;
 using MariaDbConnector.Bulk;
-using RepoDb.IntegrationTests.Setup;
+using MariaDbConnector.IntegrationTests.Setup;
 
-namespace RepoDb.MariaDb.BulkOperations.IntegrationTests.Operations
+namespace MariaDbConnector.IntegrationTests.Operations
 {
     [TestClass]
     public class WriteToServerTest

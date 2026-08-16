@@ -1,7 +1,7 @@
 using MariaDbConnector;
 using System.Data;
 
-namespace RepoDb.MariaDb.BulkOperations.IntegrationTests
+namespace MariaDbConnector.IntegrationTests
 {
     /// <summary>
     /// A helper class for the integration testing.
