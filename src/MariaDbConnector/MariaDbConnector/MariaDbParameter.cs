@@ -39,6 +39,15 @@ namespace MariaDbConnector
         public override DbType DbType { get => _parameter.DbType; set => _parameter.DbType = value; }
 
         /// <summary>
+        /// Gets or sets the <see cref="MariaDbType"/> of the parameter.
+        /// </summary>
+        public MariaDbType MariaDbType
+        {
+            get => MariaDbTypeConverter.ToMariaDbType(_parameter.MySqlDbType);
+            set => _parameter.MySqlDbType = MariaDbTypeConverter.ToMySqlDbType(value);
+        }
+
+        /// <summary>
         /// Gets or sets a value indicating whether the parameter is input-only, output-only, bidirectional, or a stored procedure return value parameter.
         /// </summary>
         public override ParameterDirection Direction { get => _parameter.Direction; set => _parameter.Direction = value; }

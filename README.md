@@ -195,7 +195,7 @@ var parameter = new MariaDbParameter
 
 MariaDbConnector aims to provide a `MariaDbType` enumeration in addition to the standard ADO.NET `DbType`.
 
-Example types include:
+The current set of types includes:
 
 ```csharp
 public enum MariaDbType
@@ -213,12 +213,16 @@ public enum MariaDbType
 
     Char,
     VarChar,
+    TinyText,
     Text,
     MediumText,
     LongText,
+    Enum,
+    Set,
 
     Binary,
     VarBinary,
+    TinyBlob,
     Blob,
     MediumBlob,
     LongBlob,
@@ -230,8 +234,15 @@ public enum MariaDbType
     Year,
 
     Json,
-    Enum,
-    Set
+
+    Geometry,
+    Point,
+    LineString,
+    Polygon,
+    MultiPoint,
+    MultiLineString,
+    MultiPolygon,
+    GeometryCollection
 }
 ```
 
