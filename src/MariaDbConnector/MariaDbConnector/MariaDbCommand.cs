@@ -138,7 +138,38 @@ namespace MariaDbConnector
         /// </summary>
         public override void Cancel()
         {
-            _command.Cancel();
+            try
+            {
+                _command.Cancel();
+            }
+            catch (MySqlException exception)
+            {
+                throw new MariaDbException(exception);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Executes a SQL statement against the connection and returns the instance of <see cref="MariaDbDataReader"/> object.
+        /// </summary>
+        /// <returns>The instance of <see cref="MariaDbDataReader"/>.</returns>
+        public new MariaDbDataReader ExecuteReader()
+        {
+            try
+            {
+                return new MariaDbDataReader(_command.ExecuteReader());
+            }
+            catch (MySqlException exception)
+            {
+                throw new MariaDbException(exception);
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         /// <summary>
@@ -147,7 +178,18 @@ namespace MariaDbConnector
         /// <returns>The number of rows affected.</returns>
         public override int ExecuteNonQuery()
         {
-            return _command.ExecuteNonQuery();
+            try
+            {
+                return _command.ExecuteNonQuery();
+            }
+            catch (MySqlException exception)
+            {
+                throw new MariaDbException(exception);
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         /// <summary>
@@ -156,7 +198,18 @@ namespace MariaDbConnector
         /// <returns>The first column of the first row in the result set.</returns>
         public override object ExecuteScalar()
         {
-            return _command.ExecuteScalar();
+            try
+            {
+                return _command.ExecuteScalar();
+            }
+            catch (MySqlException exception)
+            {
+                throw new MariaDbException(exception);
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         /// <summary>
@@ -164,7 +217,18 @@ namespace MariaDbConnector
         /// </summary>
         public override void Prepare()
         {
-            _command.Prepare();
+            try
+            {
+                _command.Prepare();
+            }
+            catch (MySqlException exception)
+            {
+                throw new MariaDbException(exception);
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         /// <summary>
