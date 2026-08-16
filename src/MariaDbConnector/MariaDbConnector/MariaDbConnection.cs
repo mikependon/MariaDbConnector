@@ -8,10 +8,17 @@ namespace MariaDbConnector
     {
         private readonly MySqlConnection _connection;
 
+        public MariaDbConnection()
+        {
+            _connection = new MySqlConnection();
+        }
+
         public MariaDbConnection(string connectionString)
         {
             _connection = new MySqlConnection(connectionString);
         }
+
+        internal MySqlConnection InnerConnection => _connection;
 
         public override string ConnectionString {get => _connection.ConnectionString; set => _connection.ConnectionString = value; }
 
@@ -38,15 +45,20 @@ namespace MariaDbConnector
             _connection.Open();
         }
 
+        public new MariaDbCommand CreateCommand()
+        {
+            return (MariaDbCommand)CreateDbCommand();
+        }
+
         protected override DbTransaction BeginDbTransaction(
             IsolationLevel isolationLevel)
         {
-            return _connection.BeginTransaction(isolationLevel);
+            return new MariaDbTransaction((MySqlTransaction)_connection.BeginTransaction(isolationLevel), this);
         }
 
         protected override DbCommand CreateDbCommand()
         {
-            return _connection.CreateCommand();
+            return new MariaDbCommand((MySqlCommand)_connection.CreateCommand(), this);
         }
     }
 }
