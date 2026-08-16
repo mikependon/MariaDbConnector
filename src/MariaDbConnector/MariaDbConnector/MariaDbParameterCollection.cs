@@ -130,7 +130,10 @@ namespace MariaDbConnector
             Array array,
             int index)
         {
-            _parameters.CopyTo(array, index);
+            foreach (MySqlParameter parameter in _parameters)
+            {
+                array.SetValue(new MariaDbParameter(parameter), index++);
+            }
         }
 
         /// <summary>
