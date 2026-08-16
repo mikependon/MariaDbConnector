@@ -4,7 +4,7 @@
     <Title>MariaDbConnector</Title>
     <AssemblyName>MariaDbConnector</AssemblyName>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Description>A lightweight, modern, open-source ADO.NET data provider for MariaDB.</Description>
+    <Description>A .NET-based connector for MariaDB. (This is not the official MariaDB package)</Description>
     <Authors>mike_pendon</Authors>
     <LangVersion>preview</LangVersion>
     <Nullable>annotations</Nullable>
