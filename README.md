@@ -1,6 +1,8 @@
 
 <div align="center">
-    <image src="logo.png" style="width:256px;" />
+    <a href="https://www.nuget.org/packages/MariaDbConnector">
+        <image src="logo.png" style="width:256px;" />
+    </a>
     <br/>
     <span style="font-size:16px;font-weight:bold;">A lightweight, modern, and open-source ADO.NET data provider for MariaDB, built for .NET applications.</span>
 </div>
@@ -526,4 +528,4 @@ When contributing, please keep the implementation aligned with the standard ADO.
 
 MariaDbConnector is an independent open-source project. MariaDB is a trademark of its respective owner. This project is not affiliated with, sponsored by, or endorsed by MariaDB plc or the MariaDB Foundation.
 
-[MIT License](LICENSE) — Copyright © 2026 [Michael Camara Pendon](https://x.com/mike_pendon)
+[MIT License](https://github.com/mikependon/MariaDbConnector/blob/main/LICENSE) — Copyright © 2026 [Michael Camara Pendon](https://x.com/mike_pendon)
