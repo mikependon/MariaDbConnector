@@ -139,6 +139,72 @@ namespace MariaDbConnector.Bulk
             RowsCopied = WriteToServerInternal(rows, columnCount);
         }
 
+        /// <summary>
+        /// Asynchronously copies all rows in the supplied <see cref="IDataReader"/> to the destination table.
+        /// </summary>
+        /// <param name="reader">The <see cref="IDataReader"/> that provides the rows to copy.</param>
+        /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+        public async Task WriteToServerAsync(
+            IDataReader reader,
+            CancellationToken cancellationToken = default)
+        {
+            RowsCopied = await WriteToServerInternalAsync(reader, cancellationToken);
+        }
+
+        /// <summary>
+        /// Asynchronously copies all rows in the supplied <see cref="DbDataReader"/> to the destination table.
+        /// </summary>
+        /// <param name="reader">The <see cref="DbDataReader"/> that provides the rows to copy.</param>
+        /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+        public async Task WriteToServerAsync(
+            DbDataReader reader,
+            CancellationToken cancellationToken = default)
+        {
+            RowsCopied = await WriteToServerInternalAsync(reader, cancellationToken);
+        }
+
+        /// <summary>
+        /// Asynchronously copies all rows in the supplied <see cref="DataTable"/> to the destination table.
+        /// </summary>
+        /// <param name="table">The <see cref="DataTable"/> that provides the rows to copy.</param>
+        /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+        public async Task WriteToServerAsync(
+            DataTable table,
+            CancellationToken cancellationToken = default)
+        {
+            var rows = new DataRow[table.Rows.Count];
+            table.Rows.CopyTo(rows, 0);
+            RowsCopied = await WriteToServerInternalAsync(rows, table.Columns.Count, cancellationToken);
+        }
+
+        /// <summary>
+        /// Asynchronously copies only rows that match the supplied row state in the supplied <see cref="DataTable"/> to the destination table.
+        /// </summary>
+        /// <param name="table">The <see cref="DataTable"/> that provides the rows to copy.</param>
+        /// <param name="rowState">A value from the <see cref="DataRowState"/> enumeration used to filter which rows are copied.</param>
+        /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+        public async Task WriteToServerAsync(
+            DataTable table,
+            DataRowState rowState,
+            CancellationToken cancellationToken = default)
+        {
+            var rows = SelectRows(table, rowState);
+            RowsCopied = await WriteToServerInternalAsync(rows, table.Columns.Count, cancellationToken);
+        }
+
+        /// <summary>
+        /// Asynchronously copies all rows in the supplied array of <see cref="DataRow"/> objects to the destination table.
+        /// </summary>
+        /// <param name="rows">The array of <see cref="DataRow"/> objects that provide the rows to copy.</param>
+        /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+        public async Task WriteToServerAsync(
+            DataRow[] rows,
+            CancellationToken cancellationToken = default)
+        {
+            var columnCount = rows != null && rows.Length > 0 ? rows[0].Table.Columns.Count : 0;
+            RowsCopied = await WriteToServerInternalAsync(rows, columnCount, cancellationToken);
+        }
+
         #endregion
 
         #region Internals
