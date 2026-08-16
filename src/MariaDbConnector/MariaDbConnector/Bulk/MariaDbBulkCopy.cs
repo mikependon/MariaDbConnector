@@ -1,3 +1,4 @@
+using K4os.Compression.LZ4.Streams.Frames;
 using System;
 using System.Data;
 using System.Data.Common;
@@ -30,16 +31,25 @@ namespace MariaDbConnector.Bulk
         public MariaDbBulkCopy(
             MariaDbConnection connection)
         {
+            ColumnMappings = new MariaDbBulkCopyColumnMappingCollection();
             _connection = connection;
         }
+
+        #region IDisposable
 
         /// <summary>
         /// Releases the resources used by the <see cref="MariaDbBulkCopy"/>.
         /// </summary>
-        public void Dispose()
-        {
-            throw new NotImplementedException();
-        }
+        public void Dispose() => _connection.Dispose();
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public MariaDbBulkCopyColumnMappingCollection ColumnMappings { get; private set; }
 
         /// <summary>
         /// Gets or sets the number of rows in each batch. At the end of each batch, the rows are sent to the server.
@@ -55,6 +65,10 @@ namespace MariaDbConnector.Bulk
         /// Gets the number of rows copied during the current bulk copy operation.
         /// </summary>
         public int RowsCopied { get; private set; }
+
+        #endregion
+
+        #region WriteToServer
 
         /// <summary>
         /// Copies all rows in the supplied <see cref="IDataReader"/> to the destination table.
@@ -102,5 +116,7 @@ namespace MariaDbConnector.Bulk
             DataRow[] rows)
         {
         }
+
+        #endregion
     }
 }

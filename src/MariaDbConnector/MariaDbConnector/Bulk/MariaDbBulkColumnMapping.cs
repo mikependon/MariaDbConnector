@@ -12,7 +12,10 @@ namespace MariaDbConnector.Bulk
         /// <param name="destinationOrdinal">The ordinal position of the destination column within the destination table.</param>
         public MariaDbBulkColumnMapping(
             int sourceColumnOrdinal,
-            int destinationOrdinal) {
+            int destinationOrdinal)
+        {
+            SourceOrdinal = sourceColumnOrdinal;
+            DestinationOrdinal = destinationOrdinal;
         }
 
         /// <summary>
@@ -22,7 +25,11 @@ namespace MariaDbConnector.Bulk
         /// <param name="destinationColumn">The name of the destination column within the destination table.</param>
         public MariaDbBulkColumnMapping(
             int sourceColumnOrdinal,
-            string destinationColumn) {
+            string destinationColumn)
+        {
+            SourceOrdinal = sourceColumnOrdinal;
+            DestinationOrdinal = -1;
+            DestinationColumn = destinationColumn;
         }
 
         /// <summary>
@@ -32,7 +39,11 @@ namespace MariaDbConnector.Bulk
         /// <param name="destinationOrdinal">The ordinal position of the destination column within the destination table.</param>
         public MariaDbBulkColumnMapping(
             string sourceColumn,
-            int destinationOrdinal) {
+            int destinationOrdinal)
+        {
+            SourceOrdinal = -1;
+            SourceColumn = sourceColumn;
+            DestinationOrdinal = destinationOrdinal;
         }
 
         /// <summary>
@@ -42,7 +53,12 @@ namespace MariaDbConnector.Bulk
         /// <param name="destinationColumn">The name of the destination column within the destination table.</param>
         public MariaDbBulkColumnMapping(
             string sourceColumn,
-            string destinationColumn) {
+            string destinationColumn)
+        {
+            SourceOrdinal = -1;
+            SourceColumn = sourceColumn;
+            DestinationOrdinal = -1;
+            DestinationColumn = destinationColumn;
         }
 
         /// <summary>

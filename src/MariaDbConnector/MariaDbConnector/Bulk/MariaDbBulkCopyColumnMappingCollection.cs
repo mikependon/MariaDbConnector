@@ -11,8 +11,7 @@ namespace MariaDbConnector.Bulk
         /// Initializes a new instance of the <see cref="MariaDbBulkCopyColumnMappingCollection"/> class.
         /// </summary>
         internal MariaDbBulkCopyColumnMappingCollection()
-        {
-        }
+        { }
 
         /// <summary>
         /// Gets the <see cref="MariaDbBulkColumnMapping"/> object at the specified index.
@@ -20,7 +19,7 @@ namespace MariaDbConnector.Bulk
         /// <param name="index">The zero-based index of the mapping to retrieve.</param>
         public MariaDbBulkColumnMapping this[int index]
         {
-            get { throw null; }
+            get { return (MariaDbBulkColumnMapping)InnerList[index]; }
         }
 
         /// <summary>
@@ -31,7 +30,8 @@ namespace MariaDbConnector.Bulk
         public MariaDbBulkColumnMapping Add(
             MariaDbBulkColumnMapping bulkCopyColumnMapping)
         {
-            throw null;
+            InnerList.Add(bulkCopyColumnMapping);
+            return bulkCopyColumnMapping;
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace MariaDbConnector.Bulk
             int sourceColumnIndex,
             int destinationColumnIndex)
         {
-            throw null;
+            return Add(new MariaDbBulkColumnMapping(sourceColumnIndex, destinationColumnIndex));
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace MariaDbConnector.Bulk
             int sourceColumnIndex,
             string destinationColumn)
         {
-            throw null;
+            return Add(new MariaDbBulkColumnMapping(sourceColumnIndex, destinationColumn));
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace MariaDbConnector.Bulk
             string sourceColumn,
             int destinationColumnIndex)
         {
-            throw null;
+            return Add(new MariaDbBulkColumnMapping(sourceColumn, destinationColumnIndex));
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace MariaDbConnector.Bulk
             string sourceColumn,
             string destinationColumn)
         {
-            throw null;
+            return Add(new MariaDbBulkColumnMapping(sourceColumn, destinationColumn));
         }
 
         /// <summary>
@@ -91,6 +91,7 @@ namespace MariaDbConnector.Bulk
         /// </summary>
         public new void Clear()
         {
+            base.Clear();
         }
 
         /// <summary>
@@ -101,7 +102,7 @@ namespace MariaDbConnector.Bulk
         public bool Contains(
             MariaDbBulkColumnMapping value)
         {
-            throw null;
+            return InnerList.Contains(value);
         }
 
         /// <summary>
@@ -113,6 +114,7 @@ namespace MariaDbConnector.Bulk
             MariaDbBulkColumnMapping[] array,
             int index)
         {
+            InnerList.CopyTo(array, index);
         }
 
         /// <summary>
@@ -123,7 +125,7 @@ namespace MariaDbConnector.Bulk
         public int IndexOf(
             MariaDbBulkColumnMapping value)
         {
-            throw null;
+            return InnerList.IndexOf(value);
         }
 
         /// <summary>
@@ -135,6 +137,7 @@ namespace MariaDbConnector.Bulk
             int index,
             MariaDbBulkColumnMapping value)
         {
+            InnerList.Insert(index, value);
         }
 
         /// <summary>
@@ -144,6 +147,7 @@ namespace MariaDbConnector.Bulk
         public void Remove(
             MariaDbBulkColumnMapping value)
         {
+            InnerList.Remove(value);
         }
 
         /// <summary>
@@ -153,6 +157,7 @@ namespace MariaDbConnector.Bulk
         public new void RemoveAt(
             int index)
         {
+            base.RemoveAt(index);
         }
     }
 }
