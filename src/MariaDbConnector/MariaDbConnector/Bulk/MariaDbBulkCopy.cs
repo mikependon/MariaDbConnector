@@ -23,6 +23,8 @@ namespace MariaDbConnector.Bulk
         // TODO:    Let us not support the MariaDbBulkCopyOptions for now.
         //          We can later extend this when there is a need.
 
+        #region Constructors
+
         /// <summary>
         /// Initializes a new instance of the <see cref="MariaDbBulkCopy"/> class using the specified connection string.
         /// </summary>
@@ -43,19 +45,12 @@ namespace MariaDbConnector.Bulk
             _connection = connection;
         }
 
-        #region IDisposable
-
-        /// <summary>
-        /// Releases the resources used by the <see cref="MariaDbBulkCopy"/>.
-        /// </summary>
-        public void Dispose() => _connection.Dispose();
-
         #endregion
 
         #region Properties
 
         /// <summary>
-        /// 
+        /// Gets the collection of column mappings that determine which source columns are written to which destination columns.
         /// </summary>
         public MariaDbBulkCopyColumnMappingCollection ColumnMappings { get; private set; }
 
@@ -81,7 +76,12 @@ namespace MariaDbConnector.Bulk
 
         #endregion
 
-        #region WriteToServer
+        #region Methods
+
+        /// <summary>
+        /// Releases the resources used by the <see cref="MariaDbBulkCopy"/>.
+        /// </summary>
+        public void Dispose() => _connection.Dispose();
 
         /// <summary>
         /// Copies all rows in the supplied <see cref="IDataReader"/> to the destination table.
@@ -207,9 +207,7 @@ namespace MariaDbConnector.Bulk
 
         #endregion
 
-        #region Internals
-
-        #region WriteToServer
+        #region Helpers
 
         /// <summary>
         /// Writes every remaining row of <paramref name="reader"/> to <see cref="DestinationTableName"/>.
@@ -282,10 +280,6 @@ namespace MariaDbConnector.Bulk
                 DeleteTempFile(filePath);
             }
         }
-
-        #endregion
-
-        #region Helpers
 
         /// <summary>
         /// Writes one row to <paramref name="writer"/> - one tab-separated field per entry in
@@ -420,23 +414,23 @@ namespace MariaDbConnector.Bulk
         }
 
         /// <summary>
-        /// 
+        /// Creates a new, empty temp file and returns its path.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The path of the newly created temp file.</returns>
         private static string GetTempFilePath() => Path.GetTempFileName();
 
         /// <summary>
-        /// 
+        /// Creates a UTF-8 (no byte order mark) <see cref="StreamWriter"/> that overwrites the given file.
         /// </summary>
-        /// <param name="filePath"></param>
-        /// <returns></returns>
+        /// <param name="filePath">The path of the file to write to.</param>
+        /// <returns>The newly created <see cref="StreamWriter"/>.</returns>
         private static StreamWriter CreateFileWriter(string filePath) =>
             new(filePath, false, new UTF8Encoding(false));
 
         /// <summary>
-        /// 
+        /// Deletes the temp file at <paramref name="filePath"/> on a best-effort basis.
         /// </summary>
-        /// <param name="filePath"></param>
+        /// <param name="filePath">The path of the temp file to delete.</param>
         private static void DeleteTempFile(string filePath)
         {
             try
@@ -450,7 +444,6 @@ namespace MariaDbConnector.Bulk
             }
         }
 
-        #endregion
         #endregion
     }
 }

@@ -14,6 +14,8 @@ namespace MariaDbConnector.Bulk
         private readonly MySqlBulkLoader _inner;
         private MariaDbConnection _connection;
 
+        #region Constructors
+
         /// <summary>
         /// Initializes a new instance of the <see cref="MariaDbBulkLoader"/> class using the specified <see cref="MariaDbConnection"/>.
         /// </summary>
@@ -24,6 +26,10 @@ namespace MariaDbConnector.Bulk
             _inner = new MySqlBulkLoader(connection.InnerConnection);
             _connection = connection;
         }
+
+        #endregion
+
+        #region Properties
 
         /// <summary>
         /// Gets or sets the connection.
@@ -126,6 +132,10 @@ namespace MariaDbConnector.Bulk
         /// </summary>
         public List<string> Expressions => _inner.Expressions;
 
+        #endregion
+
+        #region Methods
+
         /// <summary>
         /// Executes the load operation.
         /// </summary>
@@ -178,5 +188,7 @@ namespace MariaDbConnector.Bulk
         {
             return _inner.LoadAsync(stream, cancellationToken);
         }
+
+        #endregion
     }
 }

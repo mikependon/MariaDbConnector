@@ -7,10 +7,16 @@ namespace MariaDbConnector
     /// </summary>
     public class MariaDbProviderFactory : DbProviderFactory
     {
+        #region Properties
+
         /// <summary>
         /// Gets an instance of the <see cref="MariaDbProviderFactory"/>.
         /// </summary>
         public static readonly MariaDbProviderFactory Instance = new MariaDbProviderFactory();
+
+        #endregion
+
+        #region Methods
 
         /// <summary>
         /// Returns a strongly typed <see cref="DbConnection"/> instance.
@@ -43,5 +49,7 @@ namespace MariaDbConnector
         {
             return new MariaDbConnectionStringBuilder();
         }
+
+        #endregion
     }
 }

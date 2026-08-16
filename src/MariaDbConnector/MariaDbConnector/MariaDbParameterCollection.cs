@@ -12,6 +12,8 @@ namespace MariaDbConnector
     {
         private readonly MySqlParameterCollection _parameters;
 
+        #region Constructors
+
         /// <summary>
         /// Initializes a new instance of the <see cref="MariaDbParameterCollection"/> class.
         /// </summary>
@@ -20,6 +22,10 @@ namespace MariaDbConnector
         {
             _parameters = parameters;
         }
+
+        #endregion
+
+        #region Properties
 
         /// <summary>
         /// Gets the number of <see cref="MariaDbParameter"/> objects in the collection.
@@ -45,6 +51,10 @@ namespace MariaDbConnector
         /// Gets an object that can be used to synchronize access to the <see cref="MariaDbParameterCollection"/>.
         /// </summary>
         public override object SyncRoot => _parameters.SyncRoot;
+
+        #endregion
+
+        #region Methods
 
         /// <summary>
         /// Adds a parameter and its value.
@@ -236,5 +246,7 @@ namespace MariaDbConnector
         {
             _parameters[parameterName] = ((MariaDbParameter)value).InnerParameter;
         }
+
+        #endregion
     }
 }

@@ -11,6 +11,8 @@ namespace MariaDbConnector
     {
         private readonly MySqlConnection _connection;
 
+        #region Constructors
+
         /// <summary>
         /// Initializes a new instance of the <see cref="MariaDbConnection"/> class.
         /// </summary>
@@ -27,6 +29,10 @@ namespace MariaDbConnector
         {
             _connection = new MySqlConnection(connectionString);
         }
+
+        #endregion
+
+        #region Properties
 
         /// <summary>
         /// Gets the underlying <see cref="MySqlConnection"/>.
@@ -57,6 +63,10 @@ namespace MariaDbConnector
         /// Gets the current state of the connection.
         /// </summary>
         public override ConnectionState State => _connection.State;
+
+        #endregion
+
+        #region Methods
 
         /// <summary>
         /// Changes the current database for an open <see cref="MariaDbConnection"/>.
@@ -127,5 +137,7 @@ namespace MariaDbConnector
 
             base.Dispose(disposing);
         }
+
+        #endregion
     }
 }

@@ -14,6 +14,8 @@ namespace MariaDbConnector
         private MariaDbConnection _connection;
         private MariaDbTransaction _transaction;
 
+        #region Constructors
+
         /// <summary>
         /// Initializes a new instance of the <see cref="MariaDbCommand"/> class.
         /// </summary>
@@ -61,6 +63,10 @@ namespace MariaDbConnector
             _parameters = new MariaDbParameterCollection(_command.Parameters);
             _connection = connection;
         }
+
+        #endregion
+
+        #region Properties
 
         /// <summary>
         /// Gets the <see cref="MariaDbParameterCollection"/>.
@@ -122,6 +128,10 @@ namespace MariaDbConnector
                 _command.Transaction = _transaction?.InnerTransaction;
             }
         }
+
+        #endregion
+
+        #region Methods
 
         /// <summary>
         /// Attempts to cancel the execution of a currently active command.
@@ -190,5 +200,7 @@ namespace MariaDbConnector
 
             base.Dispose(disposing);
         }
+
+        #endregion
     }
 }

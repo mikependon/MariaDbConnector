@@ -10,6 +10,8 @@ namespace MariaDbConnector
     {
         private readonly MySqlException _exception;
 
+        #region Constructors
+
         /// <summary>
         /// Initializes a new instance of the <see cref="MariaDbException"/> class.
         /// </summary>
@@ -19,6 +21,10 @@ namespace MariaDbConnector
         {
             _exception = exception;
         }
+
+        #endregion
+
+        #region Properties
 
         /// <summary>
         /// Gets a number that identifies the type of error.
@@ -34,5 +40,7 @@ namespace MariaDbConnector
         /// Gets the SQL state.
         /// </summary>
         public string SqlState => _exception.SqlState;
+
+        #endregion
     }
 }

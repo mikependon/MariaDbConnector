@@ -8,6 +8,8 @@ namespace MariaDbConnector
     /// </summary>
     public static class MariaDbTypeConverter
     {
+        #region Methods
+
         /// <summary>
         /// Converts the given <see cref="MySqlDbType"/> into its corresponding <see cref="MariaDbType"/>.
         /// </summary>
@@ -175,5 +177,7 @@ namespace MariaDbConnector
                     throw new NotSupportedException($"The MariaDbType '{mariaDbType}' has no corresponding MySqlDbType.");
             }
         }
+
+        #endregion
     }
 }

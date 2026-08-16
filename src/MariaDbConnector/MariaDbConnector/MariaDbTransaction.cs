@@ -12,6 +12,8 @@ namespace MariaDbConnector
         private readonly MySqlTransaction _transaction;
         private readonly MariaDbConnection _connection;
 
+        #region Constructors
+
         /// <summary>
         /// Initializes a new instance of the <see cref="MariaDbTransaction"/> class.
         /// </summary>
@@ -24,6 +26,10 @@ namespace MariaDbConnector
             _transaction = transaction;
             _connection = connection;
         }
+
+        #endregion
+
+        #region Properties
 
         /// <summary>
         /// Gets the underlying <see cref="MySqlTransaction"/>.
@@ -39,6 +45,10 @@ namespace MariaDbConnector
         /// Gets the <see cref="MariaDbConnection"/> object associated with the transaction.
         /// </summary>
         protected override DbConnection DbConnection => _connection;
+
+        #endregion
+
+        #region Methods
 
         /// <summary>
         /// Commits the database transaction.
@@ -70,5 +80,7 @@ namespace MariaDbConnector
 
             base.Dispose(disposing);
         }
+
+        #endregion
     }
 }

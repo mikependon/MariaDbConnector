@@ -11,6 +11,8 @@ namespace MariaDbConnector
     {
         private readonly MySqlParameter _parameter;
 
+        #region Constructors
+
         /// <summary>
         /// Initializes a new instance of the <see cref="MariaDbParameter"/> class.
         /// </summary>
@@ -27,6 +29,10 @@ namespace MariaDbConnector
         {
             _parameter = parameter;
         }
+
+        #endregion
+
+        #region Properties
 
         /// <summary>
         /// Gets the underlying <see cref="MySqlParameter"/>.
@@ -87,6 +93,10 @@ namespace MariaDbConnector
         /// </summary>
         public override object Value { get => _parameter.Value; set => _parameter.Value = value; }
 
+        #endregion
+
+        #region Methods
+
         /// <summary>
         /// Resets the <see cref="DbType"/> property to its original settings.
         /// </summary>
@@ -94,5 +104,7 @@ namespace MariaDbConnector
         {
             _parameter.ResetDbType();
         }
+
+        #endregion
     }
 }

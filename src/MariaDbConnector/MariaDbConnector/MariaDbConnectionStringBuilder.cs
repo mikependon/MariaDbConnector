@@ -10,6 +10,8 @@ namespace MariaDbConnector
     {
         private readonly MySqlConnectionStringBuilder _builder;
 
+        #region Constructors
+
         /// <summary>
         /// Initializes a new instance of the <see cref="MariaDbConnectionStringBuilder"/> class.
         /// </summary>
@@ -26,6 +28,10 @@ namespace MariaDbConnector
         {
             _builder = new MySqlConnectionStringBuilder(connectionString);
         }
+
+        #endregion
+
+        #region Properties
 
         /// <summary>
         /// Gets or sets the connection string associated with this <see cref="MariaDbConnectionStringBuilder"/>.
@@ -56,5 +62,7 @@ namespace MariaDbConnector
         /// Gets or sets the password to be used when connecting.
         /// </summary>
         public string Password { get => _builder.Password; set => _builder.Password = value; }
+
+        #endregion
     }
 }

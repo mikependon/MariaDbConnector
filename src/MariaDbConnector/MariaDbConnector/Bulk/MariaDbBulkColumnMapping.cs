@@ -5,6 +5,8 @@ namespace MariaDbConnector.Bulk
     /// </summary>
     public class MariaDbBulkColumnMapping
     {
+        #region Constructors
+
         /// <summary>
         /// Initializes a new instance of the <see cref="MariaDbBulkColumnMapping"/> class, using ordinals to refer to source and destination columns.
         /// </summary>
@@ -61,6 +63,10 @@ namespace MariaDbConnector.Bulk
             DestinationColumn = destinationColumn;
         }
 
+        #endregion
+
+        #region Properties
+
         /// <summary>
         /// Gets or sets the name of the column being mapped in the destination table.
         /// </summary>
@@ -80,5 +86,7 @@ namespace MariaDbConnector.Bulk
         /// Gets or sets the ordinal position of the source column within the data source.
         /// </summary>
         public int SourceOrdinal { get; set; }
+
+        #endregion
     }
 }

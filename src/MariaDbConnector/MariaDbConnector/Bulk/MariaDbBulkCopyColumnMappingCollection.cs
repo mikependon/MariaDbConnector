@@ -7,11 +7,17 @@ namespace MariaDbConnector.Bulk
     /// </summary>
     public class MariaDbBulkCopyColumnMappingCollection : CollectionBase
     {
+        #region Constructors
+
         /// <summary>
         /// Initializes a new instance of the <see cref="MariaDbBulkCopyColumnMappingCollection"/> class.
         /// </summary>
         internal MariaDbBulkCopyColumnMappingCollection()
         { }
+
+        #endregion
+
+        #region Properties
 
         /// <summary>
         /// Gets the <see cref="MariaDbBulkColumnMapping"/> object at the specified index.
@@ -21,6 +27,10 @@ namespace MariaDbConnector.Bulk
         {
             get { return (MariaDbBulkColumnMapping)InnerList[index]; }
         }
+
+        #endregion
+
+        #region Methods
 
         /// <summary>
         /// Adds the specified <see cref="MariaDbBulkColumnMapping"/> to the collection.
@@ -159,5 +169,7 @@ namespace MariaDbConnector.Bulk
         {
             base.RemoveAt(index);
         }
+
+        #endregion
     }
 }

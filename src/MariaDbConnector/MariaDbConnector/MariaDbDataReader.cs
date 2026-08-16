@@ -12,6 +12,8 @@ namespace MariaDbConnector
     {
         private readonly MySqlDataReader _reader;
 
+        #region Constructors
+
         /// <summary>
         /// Initializes a new instance of the <see cref="MariaDbDataReader"/> class.
         /// </summary>
@@ -20,6 +22,10 @@ namespace MariaDbConnector
         {
             _reader = reader;
         }
+
+        #endregion
+
+        #region Properties
 
         /// <summary>
         /// Gets a value indicating the depth of nesting for the current row.
@@ -60,6 +66,10 @@ namespace MariaDbConnector
         /// Gets the value of the specified column in its native format given the column name.
         /// </summary>
         public override object this[string name] => _reader[name];
+
+        #endregion
+
+        #region Methods
 
         /// <summary>
         /// Gets the value of the specified column as a Boolean.
@@ -207,5 +217,7 @@ namespace MariaDbConnector
 
             base.Dispose(disposing);
         }
+
+        #endregion
     }
 }
