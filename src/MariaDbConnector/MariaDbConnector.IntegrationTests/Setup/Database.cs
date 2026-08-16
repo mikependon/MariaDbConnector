@@ -34,11 +34,11 @@ namespace RepoDb.IntegrationTests.Setup
         {
             ConnectionStringForSystem =
                 Environment.GetEnvironmentVariable("REPODB_MARIADB_CONSTR_SYSTEM") ??
-                "Server=127.0.0.1;Port=3307;Database=sys;User ID=root;Password=MariaDbConnector2026;";
+                "Server=127.0.0.1;Port=3307;Database=sys;User ID=root;Password=RepoDB2026;";
 
             ConnectionString =
                 Environment.GetEnvironmentVariable("REPODB_MARIADB_CONSTR") ??
-                "Server=127.0.0.1;Port=3307;Database=MariaDbConnector;User ID=root;Password=MariaDbConnector2026;AllowLoadLocalInfile=True;AllowUserVariables=True;";
+                "Server=127.0.0.1;Port=3307;Database=MariaDbConnector;User ID=root;Password=RepoDB2026;AllowLoadLocalInfile=True;AllowUserVariables=True;";
 
             // Enable server side local in file for bulk
             EnableServerLocalInfile();
@@ -56,8 +56,7 @@ namespace RepoDb.IntegrationTests.Setup
         public static void CreateDatabase()
         {
             using var connection = new MariaDbConnection(ConnectionStringForSystem);
-            Helper.ExecuteNonQuery(connection,
-                "CREATE DATABASE IF NOT EXISTS `MariaDbConnector`;");
+            Helper.ExecuteNonQuery(connection, "CREATE DATABASE IF NOT EXISTS `MariaDbConnector`;");
         }
 
         /// <summary>
@@ -65,9 +64,8 @@ namespace RepoDb.IntegrationTests.Setup
         /// </summary>
         public static void EnableServerLocalInfile()
         {
-            using var connection = new MariaDbConnection(ConnectionString);
-            Helper.ExecuteNonQuery(connection,
-                "SET GLOBAL local_infile = 1;");
+            using var connection = new MariaDbConnection(ConnectionStringForSystem);
+            Helper.ExecuteNonQuery(connection, "SET GLOBAL local_infile = 1;");
         }
 
         /// <summary>
@@ -88,15 +86,14 @@ namespace RepoDb.IntegrationTests.Setup
         /// </summary>
         public static void CreateTables()
         {
-            CreateBulkInsertTable();
+            CreateInsertTable();
         }
 
         /// <summary>
         /// 
         /// </summary>
-        public static void CreateBulkInsertTable()
+        public static void CreateInsertTable()
         {
-            // MariaDB supports "CREATE TABLE IF NOT EXISTS" directly - no guard block needed.
             var commandText = @"
                 CREATE TABLE IF NOT EXISTS `InsertModel`
                 (
@@ -115,12 +112,7 @@ namespace RepoDb.IntegrationTests.Setup
         }
 
         /// <summary>
-        /// Creates a non-identity table that has some important fields. All fields are nullable except
-        /// the primary key. Unlike <see cref="CreateBulkInsertTable"/>, <c>Id</c> here is a
-        /// plain <c>BIGINT</c> primary key (no <c>AUTO_INCREMENT</c>) - the caller's value is stored
-        /// as-is. Used by tests that need to know a row's <c>Id</c> ahead of time (e.g. matching against
-        /// a separately-built anonymous/expando object by primary key), which a MariaDB-generated
-        /// auto-increment value can't support.
+        /// 
         /// </summary>
         public static void CreateBulkOperationNonIdentityTable()
         {

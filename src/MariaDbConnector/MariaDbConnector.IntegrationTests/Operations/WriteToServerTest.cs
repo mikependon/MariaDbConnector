@@ -1,7 +1,6 @@
 using MariaDbConnector;
 using MariaDbConnector.Bulk;
 using RepoDb.IntegrationTests.Setup;
-using RepoDb.MariaDb.BulkOperations.IntegrationTests.Models;
 
 namespace RepoDb.MariaDb.BulkOperations.IntegrationTests.Operations
 {

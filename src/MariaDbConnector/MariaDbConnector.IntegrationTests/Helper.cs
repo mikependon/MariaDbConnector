@@ -13,14 +13,10 @@ namespace RepoDb.MariaDb.BulkOperations.IntegrationTests
             EpocDate = new DateTime(1970, 1, 1, 0, 0, 0);
         }
 
-        #region Properties
-
         /// <summary>
-        /// Gets the value of the Epoc date.
+        /// Gets the epoc date used as the baseline when generating deterministic date/time values for the test data.
         /// </summary>
         public static DateTime EpocDate { get; }
-
-        #endregion
 
         #region InsertModel
 
@@ -37,8 +33,40 @@ namespace RepoDb.MariaDb.BulkOperations.IntegrationTests
         public static DataTable CreateDataTable(int count,
             bool hasId = false)
         {
-            // TODO: Compose a table based on the properties of the InsertModel
-            throw new NotImplementedException();
+            var table = new DataTable("InsertModel");
+
+            if (hasId)
+            {
+                table.Columns.Add("Id", typeof(long));
+            }
+            table.Columns.Add("RowGuid", typeof(Guid));
+            table.Columns.Add("ColumnBit", typeof(byte));
+            table.Columns.Add("ColumnDateTime", typeof(DateTime));
+            table.Columns.Add("ColumnDateTime2", typeof(DateTime));
+            table.Columns.Add("ColumnDecimal", typeof(decimal));
+            table.Columns.Add("ColumnFloat", typeof(double));
+            table.Columns.Add("ColumnInt", typeof(int));
+            table.Columns.Add("ColumnNVarChar", typeof(string));
+
+            for (var i = 0; i < count; i++)
+            {
+                var row = table.NewRow();
+                if (hasId)
+                {
+                    row["Id"] = i + 1;
+                }
+                row["RowGuid"] = Guid.NewGuid();
+                row["ColumnBit"] = (byte)(i % 2);
+                row["ColumnDateTime"] = EpocDate.AddDays(i);
+                row["ColumnDateTime2"] = EpocDate.AddDays(i).AddSeconds(i);
+                row["ColumnDecimal"] = i * 100M;
+                row["ColumnFloat"] = i * 100D;
+                row["ColumnInt"] = i;
+                row["ColumnNVarChar"] = $"ColumnNVarChar{i}";
+                table.Rows.Add(row);
+            }
+
+            return table;
         }
 
         #endregion
@@ -52,11 +80,33 @@ namespace RepoDb.MariaDb.BulkOperations.IntegrationTests
         /// <param name="commandText"></param>
         /// <exception cref="NotImplementedException"></exception>
         internal static void ExecuteNonQuery(
-            MariaDbConnection connect,
+            MariaDbConnection connection,
             string commandText)
         {
-            // TODO: Execute the command text
-            throw new NotImplementedException();
+            connection.Open();
+            using (var command = connection.CreateCommand())
+            {
+                command.CommandText = commandText;
+                command.ExecuteNonQuery();
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="connect"></param>
+        /// <param name="commandText"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        internal static T ExecuteScalar<T>(
+            MariaDbConnection connection,
+            string commandText)
+        {
+            connection.Open();
+            using (var command = connection.CreateCommand())
+            {
+                command.CommandText = commandText;
+                return (T)command.ExecuteScalar();
+            }
         }
 
         /// <summary>
@@ -67,11 +117,10 @@ namespace RepoDb.MariaDb.BulkOperations.IntegrationTests
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
         internal static int CountRows(
-            MariaDbConnection connect,
+            MariaDbConnection connection,
             string tableName)
         {
-            // TODO: Count the number of records of the table
-            throw new NotImplementedException();
+            return ExecuteScalar<int>(connection, $"SELECT COUNT(*) FROM `{tableName}`;");
         }
 
         #endregion
