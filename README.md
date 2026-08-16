@@ -16,7 +16,7 @@ This repository will progressively host those adapters as they are built, starti
 
 | Adapter | Database Provider | Source | NuGet | Build Status |
 | ------- | ------------------ | ------ | ----- | ------------ |
-| [RepoDb.Adapter.MariaDb](https://www.nuget.org/packages/RepoDb.Adapter.MariaDb) | MariaDB | [`src/RepoDb.Adapter.MariaDb`](src/RepoDb.Adapter.MariaDb) | [![NuGet](https://img.shields.io/nuget/v/RepoDb.Adapter.MariaDb.svg)](https://www.nuget.org/packages/RepoDb.Adapter.MariaDb) | [![Build](https://img.shields.io/github/actions/workflow/status/mikependon/RepoDb.Adapter.MariaDb/build.yml?branch=main&label=build)](https://github.com/mikependon/RepoDb.Adapter.MariaDb/actions/workflows/build.yml) |
+| [RepoDb.Adapter.MariaDb](https://www.nuget.org/packages/RepoDb.Adapter.MariaDb) | MariaDB | [`src/RepoDB.Adapter.MariaDB`](src/RepoDb.Adapter.MariaDb) | [![NuGet](https://img.shields.io/nuget/v/RepoDb.Adapter.MariaDb.svg)](https://www.nuget.org/packages/RepoDb.Adapter.MariaDb) | [![Build](https://img.shields.io/github/actions/workflow/status/mikependon/RepoDb.Adapter.MariaDb/build.yml?branch=main&label=build)](https://github.com/mikependon/RepoDb.Adapter.MariaDb/actions/workflows/build.yml) |
 
 Each adapter lives in its own directory under [`src/`](src) and ships as its own NuGet package. See the adapter's own README for its goals, architecture, usage examples, and roadmap.
 
