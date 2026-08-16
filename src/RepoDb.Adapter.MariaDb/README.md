@@ -527,4 +527,9 @@ When contributing, please keep the implementation aligned with the standard ADO.
 
 RepoDb.Adapter.MariaDb is an independent open-source project. MariaDB is a trademark of its respective owner. This project is not affiliated with, sponsored by, or endorsed by MariaDB plc or the MariaDB Foundation.
 
-[MIT License](https://github.com/mikependon/RepoDb.Adapter.MariaDb/blob/main/LICENSE) — Copyright © 2026 [Michael Camara Pendon](https://x.com/mike_pendon)
+[Apache License 2.0]([https://github.com/mikependon/RepoDb.Adapter.MariaDb/blob/main/LICENSE](https://apache.org/licenses/LICENSE-2.0.html) — Copyright © 2026 [Michael Camara Pendon](https://x.com/mike_pendon) 
+
+This project depends on Oracle's MySQL Connector/NET (`MySql.Data`),
+which is separately licensed under GPL-2.0 with the Universal FOSS
+Exception, Version 1.0.
+
