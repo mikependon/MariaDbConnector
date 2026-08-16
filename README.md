@@ -1,16 +1,26 @@
-# MariaDbConnector
 
-```diff
-- This is not the official .NET provider from MariaDB. It is just a thin wrapper and DB-types mapper from MySql.Data. Use with your own disclaimer.
-```
+<div align="center">
+    <image src="logo.png" style="width:256px;" />
+    <br/>
+    <span style="font-size:16px;font-weight:bold;">A lightweight, modern, and open-source ADO.NET data provider for MariaDB, built for .NET applications.</span>
+</div>
 
-**MariaDbConnector** is a lightweight, modern, and open-source **ADO.NET data provider for MariaDB**, built for .NET applications.
+-----
 
-The project aims to provide a dedicated MariaDB connector based on the standard `System.Data.Common` abstractions, while exposing MariaDB-specific data types, behaviors, and capabilities where applicable.
+> **Disclaimer**: This is an independent, unofficial .NET provider for MariaDB. It is a thin ADO.NET wrapper and type-mapping layer built on top of [MySql.Data](https://www.nuget.org/packages/mysql.data) and is not affiliated with or endorsed by MariaDB plc or the MariaDB Foundation.
+
+The project aims to provide a dedicated MariaDB connector based on the standard `System.Data.Common` abstractions, while exposing MariaDB-specific data types, behaviors, and capabilities where applicable. All objects will be prefixed by `MariaDb` so it is more standardized in .NET.
+
+It implements the `Async` equivalent of the [MySql.Data](https://www.nuget.org/packages/mysql.data) that is dedicated for MariaDB. It also covers the full implementation of Bulk operations using the `MySql.Data`'s `MySqlBulkLoader` class.
 
 > **Status:** Early development. The API and implementation are subject to change.
 
-## Goals
+## Why is this exists?
+As [RepoDB](https://www.nuget.org/packages/RepoDb) expands its support for data movement across various database providers, dedicated MariaDB objects are required within its extension library, [RepoDb.MariaDb](https://www.nuget.org/packages/RepoDb.MariaDb), to avoid class collisions with [RepoDb.MySql](https://www.nuget.org/packages/RepoDb.MySql) and [RepoDb.MySqlConnector](https://www.nuget.org/packages/RepoDb.MySqlConnector). The same applies to its Bulk Operations extension, [RepoDb.MariaDb.BulkOperations](https://www.nuget.org/packages/RepoDb.MariaDb.BulkOperations).
+
+This library will serve as the **official MariaDB connector for RepoDB** and will be used internally by the [RepoDB project](https://github.com/mikependon/RepoDB).
+
+## Goals of the library
 
 MariaDbConnector aims to:
 
@@ -258,6 +268,13 @@ DbType
 MariaDB Server Type
 ```
 
+`MariaDbTypeConverter` provides the current leg of that mapping, converting between `MariaDbType` and the underlying `MySql.Data.MySqlClient.MySqlDbType`:
+
+```csharp
+var mariaDbType = MariaDbTypeConverter.ToMariaDbType(MySqlDbType.VarChar);
+var mySqlDbType = MariaDbTypeConverter.ToMySqlDbType(MariaDbType.BigInt);
+```
+
 ## Transactions
 
 `MariaDbTransaction` extends `DbTransaction` and provides standard ADO.NET transaction semantics.
@@ -340,19 +357,20 @@ The initial development effort will prioritize the core connection, command, par
 
 ## Bulk Operations
 
-High-performance bulk operations are an important future capability of MariaDbConnector.
+MariaDbConnector provides bulk-loading support under the `MariaDbConnector.Bulk` namespace, built on top of `LOAD DATA LOCAL INFILE` via `MySql.Data`'s `MySqlBulkLoader`.
 
-Potential APIs include:
+| MariaDbConnector.Bulk                       | Purpose                                                                             |
+| -------------------------------------------- | ------------------------------------------------------------------------------------ |
+| `MariaDbBulkCopy`                            | Efficiently bulk-loads a `DbDataReader`/`IDataReader`, `DataTable`, or `DataRow[]` into a MariaDB table |
+| `MariaDbBulkColumnMapping`                   | Defines the mapping between a source column and a destination column                |
+| `MariaDbBulkCopyColumnMappingCollection`     | The collection of `MariaDbBulkColumnMapping` objects exposed by `MariaDbBulkCopy.ColumnMappings` |
+| `MariaDbBulkLoader`                          | A strongly typed wrapper around `LOAD DATA LOCAL INFILE`, for loading directly from a file or stream |
+| `MariaDbBulkLoaderConflictOption`            | Controls how `MariaDbBulkLoader` behaves when a key conflict arises during a load   |
+| `MariaDbBulkLoaderPriority`                  | Controls the priority (`None`, `Low`, `Concurrent`) of a `MariaDbBulkLoader` operation |
 
-```text
-MariaDbBulkCopy
-MariaDbBulkCopyOptions
-MariaDbBulkCopyColumnMapping
-MariaDbBulkCopyColumnMappingCollection
-MariaDbBulkLoader
-```
+### MariaDbBulkCopy
 
-The goal is to eventually provide an API such as:
+`MariaDbBulkCopy` writes its source rows to a temporary file and loads them with `MariaDbBulkLoader`:
 
 ```csharp
 await using var connection =
@@ -360,7 +378,7 @@ await using var connection =
 
 await connection.OpenAsync();
 
-var bulkCopy = new MariaDbBulkCopy(connection)
+using var bulkCopy = new MariaDbBulkCopy(connection)
 {
     DestinationTableName = "Customer",
     BatchSize = 10_000
@@ -370,15 +388,33 @@ bulkCopy.ColumnMappings.Add("Id", "Id");
 bulkCopy.ColumnMappings.Add("Name", "Name");
 bulkCopy.ColumnMappings.Add("Email", "Email");
 
-await bulkCopy.WriteToServerAsync(customers);
+await bulkCopy.WriteToServerAsync(customersDataTable);
+
+Console.WriteLine(bulkCopy.RowsCopied);
 ```
 
-The underlying implementation may utilize MariaDB-specific high-performance mechanisms such as:
+`WriteToServer`/`WriteToServerAsync` are overloaded to accept an `IDataReader`, a `DbDataReader`, a `DataTable` (optionally filtered by `DataRowState`), or a `DataRow[]`.
 
-* `LOAD DATA INFILE`
-* `LOAD DATA LOCAL INFILE`
-* MariaDB bulk execution protocol
-* Prepared statement batching
+### MariaDbBulkLoader
+
+`MariaDbBulkLoader` can also be used directly for `LOAD DATA LOCAL INFILE`-style loading from a file or stream, without going through `MariaDbBulkCopy`:
+
+```csharp
+var bulkLoader = new MariaDbBulkLoader(connection)
+{
+    TableName = "Customer",
+    FileName = "customers.csv",
+    FieldTerminator = ",",
+    LineTerminator = "\n",
+    Local = true
+};
+
+bulkLoader.Columns.Add("Id");
+bulkLoader.Columns.Add("Name");
+bulkLoader.Columns.Add("Email");
+
+var rowsLoaded = await bulkLoader.LoadAsync();
+```
 
 ## Architecture
 
@@ -427,10 +463,11 @@ The initial development will focus on the essential ADO.NET provider infrastruct
 7. `MariaDbException`
 8. `MariaDbConnectionStringBuilder`
 9. `MariaDbProviderFactory`
+10. `MariaDbType` and `MariaDbTypeConverter`
+11. `MariaDbBulkCopy`, `MariaDbBulkColumnMapping`, `MariaDbBulkCopyColumnMappingCollection`, and `MariaDbBulkLoader`
 
 Subsequent development may include:
 
-* MariaDB-specific type system
 * Connection pooling
 * Prepared statements
 * TLS/SSL
@@ -440,7 +477,7 @@ Subsequent development may include:
 * Advanced server metadata
 * `MariaDbDataAdapter`
 * `MariaDbCommandBuilder`
-* Native bulk operations
+* Native (non `LOAD DATA`-based) bulk execution protocol
 * Performance optimizations
 
 ## ORM and Library Integration
