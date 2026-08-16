@@ -1,4 +1,4 @@
-# RepoDb Adapters
+# RepoDB Adapters
 
 This repository is the home of the official [RepoDB](https://github.com/mikependon/RepoDB) database adapters — dedicated, provider-specific ADO.NET implementations that RepoDB relies on for data access and bulk operations.
 
