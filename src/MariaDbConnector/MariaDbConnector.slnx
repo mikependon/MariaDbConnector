@@ -1,4 +1,5 @@
 <Solution>
+  <Project Path="MariaDbConnector.IntegrationTests/MariaDbConnector.IntegrationTests.csproj" Id="2757c6c3-4e71-4f7b-8352-4fecaea23f22" />
   <Project Path="MariaDbConnector.UnitTests/MariaDbConnector.UnitTests.csproj" Id="1c79ed89-9887-475c-86fb-926d44d5cac8" />
   <Project Path="MariaDbConnector/MariaDbConnector.csproj" />
 </Solution>
