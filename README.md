@@ -478,4 +478,4 @@ When contributing, please keep the implementation aligned with the standard ADO.
 
 MariaDbConnector is an independent open-source project.
 
-MariaDB is a trademark of its respective owner. This project is not affiliated with, sponsored by, or endorsed by MariaDB plc or the MariaDB Foundation.
+MariaDB is a trademark of its respective owner. This project is not affiliated with, sponsored by, or endorsed by MariaDB PLC or the MariaDB Foundation.
