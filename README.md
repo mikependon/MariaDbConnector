@@ -26,4 +26,4 @@ Contributions are welcome, whether that means improving an existing adapter or p
 
 ## License
 
-[MIT License](LICENSE) — Copyright © 2026 [Michael Camara Pendon](https://x.com/mike_pendon)
+[Apache License 2.0](LICENSE) — Copyright © 2026 [Michael Camara Pendon](https://x.com/mike_pendon)
