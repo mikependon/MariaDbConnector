@@ -105,7 +105,8 @@ namespace MariaDbConnector.IntegrationTests
             using (var command = connection.CreateCommand())
             {
                 command.CommandText = commandText;
-                return (T)command.ExecuteScalar();
+                var result = command.ExecuteScalar();
+                return (T)Convert.ChangeType(result, typeof(T));
             }
         }
 

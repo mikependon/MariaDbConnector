@@ -1,5 +1,6 @@
 using MariaDbConnector.Bulk;
 using MariaDbConnector.IntegrationTests.Setup;
+using System.Data;
 
 namespace MariaDbConnector.IntegrationTests.Operations
 {
@@ -26,7 +27,14 @@ namespace MariaDbConnector.IntegrationTests.Operations
             {
                 // Setup
                 var table = Helper.CreateDataTable(10);
-                var bulkCopy = new MariaDbBulkCopy(connection);
+                var bulkCopy = new MariaDbBulkCopy(connection)
+                {
+                    DestinationTableName = table.TableName
+                };
+                foreach (DataColumn column in table.Columns)
+                {
+                    bulkCopy.ColumnMappings.Add(column.ColumnName, column.ColumnName);
+                }
 
                 // Act
                 bulkCopy.WriteToServer(table);

@@ -7,7 +7,6 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using MySql.Data.MySqlClient;
 
 namespace MariaDbConnector.Bulk
 {
@@ -213,10 +212,10 @@ namespace MariaDbConnector.Bulk
         /// Writes every remaining row of <paramref name="reader"/> to <see cref="DestinationTableName"/>.
         /// </summary>
         /// <param name="reader">
-        /// The source reader. Read positionally via each mapping's <see cref="MySqlBulkCopyColumnMapping.SourceOrdinal"/> -
-        /// see the remarks on <see cref="MySqlBulkCopy"/> for why no other ordinal of this reader is ever touched.
+        /// The source reader. Read via each mapping's <see cref="MariaDbBulkColumnMapping.SourceOrdinal"/>, or by
+        /// <see cref="MariaDbBulkColumnMapping.SourceColumn"/> name when the ordinal is unset.
         /// </param>
-        /// <returns>The number of rows <see cref="MySqlBulkLoader"/> reports having loaded.</returns>
+        /// <returns>The number of rows <see cref="MariaDbBulkLoader"/> reports having loaded.</returns>
         private int WriteToServerInternal(IDataReader reader) =>
             WriteToServerInternalAsync(reader, CancellationToken.None).GetAwaiter().GetResult();
 
@@ -234,7 +233,11 @@ namespace MariaDbConnector.Bulk
                     while (reader.Read())
                     {
                         cancellationToken.ThrowIfCancellationRequested();
-                        WriteRow(writer, ordinal => reader.IsDBNull(ordinal) ? null : reader.GetValue(ordinal));
+                        WriteRow(writer, mapping =>
+                        {
+                            var ordinal = mapping.SourceOrdinal >= 0 ? mapping.SourceOrdinal : reader.GetOrdinal(mapping.SourceColumn);
+                            return reader.IsDBNull(ordinal) ? null : reader.GetValue(ordinal);
+                        });
                     }
                 }
                 return await LoadAsync(filePath, cancellationToken);
@@ -248,9 +251,9 @@ namespace MariaDbConnector.Bulk
         /// <summary>
         /// Writes <paramref name="rows"/> to <see cref="DestinationTableName"/>.
         /// </summary>
-        /// <param name="rows">The source rows, read positionally via each mapping's <see cref="MySqlBulkCopyColumnMapping.SourceOrdinal"/> - i.e. the real <see cref="DataTable"/> column index, not the mapping's position in <see cref="ColumnMappings"/> (those can legitimately diverge - see <c>WriteToServer.cs</c>'s remarks on why the ordinal must come from <c>DataTable.Columns.IndexOf</c>).</param>
+        /// <param name="rows">The source rows, read via each mapping's <see cref="MariaDbBulkColumnMapping.SourceOrdinal"/> - i.e. the real <see cref="DataTable"/> column index, not the mapping's position in <see cref="ColumnMappings"/> (those can legitimately diverge) - or by <see cref="MariaDbBulkColumnMapping.SourceColumn"/> name when the ordinal is unset.</param>
         /// <param name="columnCount">Unused beyond a defensive bounds check - <see cref="ColumnMappings"/> alone already determines exactly which columns get written.</param>
-        /// <returns>The number of rows <see cref="MySqlBulkLoader"/> reports having loaded.</returns>
+        /// <returns>The number of rows <see cref="MariaDbBulkLoader"/> reports having loaded.</returns>
         public int WriteToServerInternal(DataRow[] rows,
             int columnCount) =>
             WriteToServerInternalAsync(rows, columnCount, CancellationToken.None).GetAwaiter().GetResult();
@@ -270,7 +273,11 @@ namespace MariaDbConnector.Bulk
                     foreach (var row in rows ?? Array.Empty<DataRow>())
                     {
                         cancellationToken.ThrowIfCancellationRequested();
-                        WriteRow(writer, ordinal => ordinal < columnCount && ordinal < row.Table.Columns.Count && !row.IsNull(ordinal) ? row[ordinal] : null);
+                        WriteRow(writer, mapping =>
+                        {
+                            var ordinal = mapping.SourceOrdinal >= 0 ? mapping.SourceOrdinal : row.Table.Columns.IndexOf(mapping.SourceColumn);
+                            return ordinal >= 0 && ordinal < columnCount && ordinal < row.Table.Columns.Count && !row.IsNull(ordinal) ? row[ordinal] : null;
+                        });
                     }
                 }
                 return await LoadAsync(filePath, cancellationToken);
@@ -286,9 +293,9 @@ namespace MariaDbConnector.Bulk
         /// <see cref="ColumnMappings"/>, in that order, terminated by <see cref="LineTerminator"/>.
         /// </summary>
         /// <param name="writer">The temp file writer.</param>
-        /// <param name="getValue">Resolves a source ordinal to its raw CLR value (or <see langword="null"/> for a database <c>NULL</c>).</param>
+        /// <param name="getValue">Resolves a column mapping - by <see cref="MariaDbBulkColumnMapping.SourceOrdinal"/> or, when unset, by <see cref="MariaDbBulkColumnMapping.SourceColumn"/> - to its raw CLR value (or <see langword="null"/> for a database <c>NULL</c>).</param>
         private void WriteRow(StreamWriter writer,
-            Func<int, object> getValue)
+            Func<MariaDbBulkColumnMapping, object> getValue)
         {
             for (var i = 0; i < ColumnMappings.Count; i++)
             {
@@ -296,7 +303,7 @@ namespace MariaDbConnector.Bulk
                 {
                     writer.Write(_fieldTerminator);
                 }
-                writer.Write(FormatValue(getValue(ColumnMappings[i].SourceOrdinal)));
+                writer.Write(FormatValue(getValue((MariaDbBulkColumnMapping)ColumnMappings[i])));
             }
             writer.Write(_lineTerminator);
         }
@@ -361,7 +368,7 @@ namespace MariaDbConnector.Bulk
         }
 
         /// <summary>
-        /// Runs the configured <see cref="MySqlBulkLoader"/> against the temp file built by <see cref="WriteRow"/>, back-tick-quoting each mapped destination column along the way - the
+        /// Runs the configured <see cref="MariaDbBulkLoader"/> against the temp file built by <see cref="WriteRow"/>, back-tick-quoting each mapped destination column along the way - the
         /// counterpart to <see cref="DestinationTableName"/> already arriving pre-quoted (see its remarks).
         /// </summary>
         private async Task<int> LoadAsync(string filePath,
