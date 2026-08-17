@@ -11,11 +11,11 @@ on:
     types: [published]
 
 env:
-  PROJECT_PATH: src/RepoDb.Adapter.MariaDb/RepoDb.Adapter.MariaDb/RepoDb.Adapter.MariaDb.csproj
+  PROJECT_PATH: src/RepoDb.Connector.MariaDb/RepoDb.Connector.MariaDb/RepoDb.Connector.MariaDb.csproj
 
 jobs:
   publish:
-    name: Publish RepoDb.Adapter.MariaDb
+    name: Publish RepoDb.Connector.MariaDb
     runs-on: ubuntu-latest
     environment: production
 

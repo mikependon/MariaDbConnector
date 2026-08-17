@@ -8,9 +8,9 @@ on:
   workflow_dispatch:
 
 env:
-  SOLUTION_PATH: src/RepoDb.Adapter.MariaDb/RepoDb.Adapter.MariaDb.slnx
+  SOLUTION_PATH: src/RepoDb.Connector.MariaDb/RepoDb.Connector.MariaDb.slnx
   REPODB_MARIADB_CONSTR_SYSTEM: "Server=127.0.0.1;Port=3307;Database=sys;User ID=root;Password=RepoDB2026;"
-  REPODB_MARIADB_CONSTR: "Server=127.0.0.1;Port=3307;Database=RepoDb.Adapter.MariaDb;User ID=root;Password=RepoDB2026;AllowLoadLocalInfile=True;AllowUserVariables=True;"
+  REPODB_MARIADB_CONSTR: "Server=127.0.0.1;Port=3307;Database=RepoDb.Connector.MariaDb;User ID=root;Password=RepoDB2026;AllowLoadLocalInfile=True;AllowUserVariables=True;"
 
 jobs:
   build:
@@ -44,4 +44,4 @@ jobs:
         run: dotnet build $SOLUTION_PATH --no-restore
 
       - name: Test
-        run: dotnet test $SOLUTION_PATH --no-build --logger "console;verbosity=normal"
+        run: dotnet test $SOLUTION_PATH --no-build --output Detailed
