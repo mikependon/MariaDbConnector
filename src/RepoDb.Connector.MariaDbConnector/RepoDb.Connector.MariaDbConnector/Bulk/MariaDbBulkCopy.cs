@@ -177,14 +177,20 @@ namespace RepoDb.Connector.MariaDbConnector.Bulk
             DataRow[] rows,
             CancellationToken cancellationToken = default)
         {
-            var columnCount = rows != null && rows.Length > 0 ? rows[0].Table.Columns.Count : 0;
+            if (rows == null || rows.Length == 0)
+            {
+                RowsCopied = 0;
+                return;
+            }
+
+            var columnCount = rows[0].Table.Columns.Count;
 
             int ResolveSourceOrdinal(MariaDbBulkColumnMapping mapping) =>
-                rows != null && rows.Length > 0 ? rows[0].Table.Columns.IndexOf(mapping.SourceColumn) : -1;
+                rows[0].Table.Columns.IndexOf(mapping.SourceColumn);
 
             RowsCopied = await ExecuteAsync(
                 ResolveSourceOrdinal,
-                bulkCopy => bulkCopy.WriteToServerAsync(rows ?? Array.Empty<DataRow>(), columnCount, cancellationToken),
+                bulkCopy => bulkCopy.WriteToServerAsync(rows, columnCount, cancellationToken),
                 cancellationToken);
         }
 
