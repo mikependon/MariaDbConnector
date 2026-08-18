@@ -39,7 +39,11 @@ namespace RepoDb.Connector.MariaDb
         /// <summary>
         /// Gets the SQL state.
         /// </summary>
+#if NET8_0_OR_GREATER
+        public override string SqlState => _exception.SqlState;
+#else
         public string SqlState => _exception.SqlState;
+#endif
 
         #endregion
     }
