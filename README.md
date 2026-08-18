@@ -25,10 +25,6 @@ This repository will progressively host those connectors as they are built, star
 
 Each connector lives in its own directory under [`src/`](src) and ships as its own NuGet package. See the connector's own README for its goals, architecture, usage examples, and roadmap.
 
-## Changelog
-
-See [CHANGELOG.md](CHANGELOG.md) for the release history of every connector in this repository.
-
 ## Contributing
 
 Contributions are welcome, whether that means improving an existing connector or proposing support for a new database provider. Please open an issue to discuss significant changes before submitting a pull request.

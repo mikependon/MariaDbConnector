@@ -502,6 +502,10 @@ Areas where contributions will be particularly valuable include:
 
 When contributing, please keep the implementation aligned with the standard ADO.NET architecture and avoid unnecessary abstractions that could negatively affect performance.
 
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for the release history of every connector in this repository.
+
 ## License
 
 RepoDb.Connector.MariaDbConnector is an independent open-source project. MariaDB is a trademark of its respective owner. This project is not affiliated with, sponsored by, or endorsed by MariaDB plc or the MariaDB Foundation.
