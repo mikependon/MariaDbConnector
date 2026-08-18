@@ -1,0 +1,70 @@
+name: Build Base
+
+on:
+  workflow_call:
+    inputs:
+      solution-path:
+        description: "Path to the solution (.sln/.slnx) to restore, build, and test"
+        required: true
+        type: string
+      dotnet-version:
+        description: ".NET SDK version to install"
+        required: false
+        type: string
+        default: "10.0.x"
+      env-vars:
+        description: "JSON object of environment variables exposed to the test step (e.g. connection strings)"
+        required: false
+        type: string
+        default: "{}"
+      service-image:
+        description: "Docker image for the database service container backing integration tests"
+        required: true
+        type: string
+      service-env:
+        description: "JSON object of environment variables passed to the database service container"
+        required: false
+        type: string
+        default: "{}"
+      service-port-mapping:
+        description: "Host:container port mapping for the database service container, e.g. 3307:3306"
+        required: true
+        type: string
+      service-health-cmd:
+        description: "Health-check command used to determine when the database service container is ready"
+        required: true
+        type: string
+
+jobs:
+  build:
+    name: Build & Test
+    runs-on: ubuntu-latest
+
+    services:
+      database:
+        image: ${{ inputs.service-image }}
+        env: ${{ fromJSON(inputs.service-env) }}
+        ports:
+          - ${{ inputs.service-port-mapping }}
+        options: >-
+          --health-cmd="${{ inputs.service-health-cmd }}"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: ${{ inputs.dotnet-version }}
+
+      - name: Restore
+        run: dotnet restore ${{ inputs.solution-path }}
+
+      - name: Build
+        run: dotnet build ${{ inputs.solution-path }} --no-restore
+
+      - name: Test
+        env: ${{ fromJSON(inputs.env-vars) }}
+        run: dotnet test ${{ inputs.solution-path }} --no-build --output Detailed

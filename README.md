@@ -20,7 +20,7 @@ This repository will progressively host those connectors as they are built, star
 
 | Connector | Database Provider | Source | NuGet | Build Status |
 | ------- | ------------------ | ------ | ----- | ------------ |
-| [RepoDb.Connector.MariaDb](https://www.nuget.org/packages/RepoDb.Connector.MariaDb) | MariaDB | [`src/RepoDb.Connector.MariaDB`](src/RepoDb.Connector.MariaDb) | [![NuGet](https://img.shields.io/nuget/v/RepoDb.Connector.MariaDb.svg)](https://www.nuget.org/packages/RepoDb.Connector.MariaDb) | [![Build](https://img.shields.io/github/actions/workflow/status/mikependon/RepoDb.Connector.MariaDb/build.yml?branch=main&label=build)](https://github.com/mikependon/RepoDb.Connector.MariaDb/actions/workflows/build.yml) |
+| [RepoDb.Connector.MariaDb](https://www.nuget.org/packages/RepoDb.Connector.MariaDb) | MariaDB | [`src/RepoDb.Connector.MariaDB`](src/RepoDb.Connector.MariaDb) | [![NuGet](https://img.shields.io/nuget/v/RepoDb.Connector.MariaDb.svg)](https://www.nuget.org/packages/RepoDb.Connector.MariaDb) | [![Build](https://img.shields.io/github/actions/workflow/status/mikependon/RepoDB.Connectors/build-mariadb.yml?branch=main&label=build)](https://github.com/mikependon/RepoDB.Connectors/actions/workflows/build-mariadb.yml) |
 
 Each connector lives in its own directory under [`src/`](src) and ships as its own NuGet package. See the connector's own README for its goals, architecture, usage examples, and roadmap.
 
