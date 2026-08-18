@@ -67,4 +67,4 @@ jobs:
 
       - name: Test
         env: ${{ fromJSON(inputs.env-vars) }}
-        run: dotnet test ${{ inputs.solution-path }} --no-build --output Detailed
+        run: dotnet test ${{ inputs.solution-path }} --no-build --output Detailed --max-parallel-test-modules 1
