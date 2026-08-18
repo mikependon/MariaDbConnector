@@ -71,5 +71,59 @@ namespace RepoDb.Connector.MariaDb.IntegrationTests.Operations
                 }
             }
         }
+
+        [TestMethod]
+        public async Task TestMariaDbExecuteNonQueryAsyncTest()
+        {
+            using (var connection = new MariaDbConnection(Database.ConnectionString))
+            {
+                // Setup
+                var commandText = "TRUNCATE TABLE `InsertModel`;";
+
+                // Act
+                await connection.OpenAsync();
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = commandText;
+                    await command.ExecuteNonQueryAsync();
+                }
+            }
+        }
+
+        [TestMethod]
+        public async Task ThrowOnMariaDbExecuteNonQueryAsyncWithInvalidTable()
+        {
+            using (var connection = new MariaDbConnection(Database.ConnectionString))
+            {
+                // Setup
+                var commandText = "TRUNCATE TABLE `InvalidTable`;";
+
+                // Act
+                await connection.OpenAsync();
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = commandText;
+                    await Assert.ThrowsAsync<MariaDbException>(() => command.ExecuteNonQueryAsync());
+                }
+            }
+        }
+
+        [TestMethod]
+        public async Task ThrowOnMariaDbExecuteNonQueryAsyncWithInvalidSyntax()
+        {
+            using (var connection = new MariaDbConnection(Database.ConnectionString))
+            {
+                // Setup
+                var commandText = "TRUNCATE TABLE Invalid Table;";
+
+                // Act
+                await connection.OpenAsync();
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = commandText;
+                    await Assert.ThrowsAsync<MariaDbException>(() => command.ExecuteNonQueryAsync());
+                }
+            }
+        }
     }
 }

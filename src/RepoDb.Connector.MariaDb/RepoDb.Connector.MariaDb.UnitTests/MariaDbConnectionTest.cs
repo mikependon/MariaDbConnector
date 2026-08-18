@@ -58,5 +58,20 @@ namespace RepoDb.Connector.MariaDb.UnitTests
             // Assert
             Assert.IsInstanceOfType<MariaDbCommand>(output);
         }
+
+        [TestMethod]
+        public async Task TestMariaDbConnectionOpenAsyncForCancelledTokenThrowsTaskCanceledException()
+        {
+            // Setup
+            using var connection = new MariaDbConnection(ConnectionString);
+            using var cts = new CancellationTokenSource();
+            cts.Cancel();
+
+            // Act
+            Task Act() => connection.OpenAsync(cts.Token);
+
+            // Assert
+            await Assert.ThrowsExactlyAsync<TaskCanceledException>(Act);
+        }
     }
 }

@@ -81,5 +81,69 @@ namespace RepoDb.Connector.MariaDb.IntegrationTests.Operations
                 }
             }
         }
+
+        [TestMethod]
+        public async Task TestMariaDbExecuteScalarAsyncTest()
+        {
+            using (var connection = new MariaDbConnection(Database.ConnectionString))
+            {
+                // Setup
+                await connection.OpenAsync();
+                using (var insertCommand = connection.CreateCommand())
+                {
+                    insertCommand.CommandText =
+                        "INSERT INTO `InsertModel` (`RowGuid`, `ColumnNVarChar`) VALUES " +
+                        "(UUID(), 'ExecuteScalarAsyncTest'), (UUID(), 'ExecuteScalarAsyncTest'), (UUID(), 'ExecuteScalarAsyncTest');";
+                    await insertCommand.ExecuteNonQueryAsync();
+                }
+
+                // Act
+                object result;
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT COUNT(*) FROM `InsertModel` WHERE `ColumnNVarChar` = 'ExecuteScalarAsyncTest';";
+                    result = await command.ExecuteScalarAsync();
+                }
+
+                // Assert
+                Assert.AreEqual(3L, result);
+            }
+        }
+
+        [TestMethod]
+        public async Task ThrowOnMariaDbExecuteScalarAsyncWithInvalidTable()
+        {
+            using (var connection = new MariaDbConnection(Database.ConnectionString))
+            {
+                // Setup
+                var commandText = "SELECT COUNT(*) FROM `InvalidTable`;";
+
+                // Act
+                await connection.OpenAsync();
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = commandText;
+                    await Assert.ThrowsAsync<MariaDbException>(() => command.ExecuteScalarAsync());
+                }
+            }
+        }
+
+        [TestMethod]
+        public async Task ThrowOnMariaDbExecuteScalarAsyncWithInvalidSyntax()
+        {
+            using (var connection = new MariaDbConnection(Database.ConnectionString))
+            {
+                // Setup
+                var commandText = "SELEC COUNT(*) FROM `InsertModel`;";
+
+                // Act
+                await connection.OpenAsync();
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = commandText;
+                    await Assert.ThrowsAsync<MariaDbException>(() => command.ExecuteScalarAsync());
+                }
+            }
+        }
     }
 }

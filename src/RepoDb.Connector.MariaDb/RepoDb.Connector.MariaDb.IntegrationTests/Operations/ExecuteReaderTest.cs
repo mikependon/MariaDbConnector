@@ -87,5 +87,150 @@ namespace RepoDb.Connector.MariaDb.IntegrationTests.Operations
                 }
             }
         }
+
+        [TestMethod]
+        public async Task TestMariaDbExecuteReaderAsyncTest()
+        {
+            using (var connection = new MariaDbConnection(Database.ConnectionString))
+            {
+                // Setup
+                await connection.OpenAsync();
+                using (var insertCommand = connection.CreateCommand())
+                {
+                    insertCommand.CommandText =
+                        "INSERT INTO `InsertModel` (`RowGuid`, `ColumnNVarChar`) VALUES " +
+                        "(UUID(), 'ExecuteReaderAsyncTest'), (UUID(), 'ExecuteReaderAsyncTest');";
+                    await insertCommand.ExecuteNonQueryAsync();
+                }
+
+                // Act
+                var rowCount = 0;
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT * FROM `InsertModel` WHERE `ColumnNVarChar` = 'ExecuteReaderAsyncTest';";
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            rowCount++;
+                        }
+                    }
+                }
+
+                // Assert
+                Assert.AreEqual(2, rowCount);
+            }
+        }
+
+        [TestMethod]
+        public async Task ThrowOnMariaDbExecuteReaderAsyncWithInvalidTable()
+        {
+            using (var connection = new MariaDbConnection(Database.ConnectionString))
+            {
+                // Setup
+                var commandText = "SELECT * FROM `InvalidTable`;";
+
+                // Act
+                await connection.OpenAsync();
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = commandText;
+                    await Assert.ThrowsAsync<MariaDbException>(() => command.ExecuteReaderAsync());
+                }
+            }
+        }
+
+        [TestMethod]
+        public async Task ThrowOnMariaDbExecuteReaderAsyncWithInvalidSyntax()
+        {
+            using (var connection = new MariaDbConnection(Database.ConnectionString))
+            {
+                // Setup
+                var commandText = "SELEC * FROM `InsertModel`;";
+
+                // Act
+                await connection.OpenAsync();
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = commandText;
+                    await Assert.ThrowsAsync<MariaDbException>(() => command.ExecuteReaderAsync());
+                }
+            }
+        }
+
+        [TestMethod]
+        public async Task TestMariaDbDataReaderNextResultAsyncForMultipleResultSets()
+        {
+            using (var connection = new MariaDbConnection(Database.ConnectionString))
+            {
+                // Setup
+                await connection.OpenAsync();
+                using (var insertCommand = connection.CreateCommand())
+                {
+                    insertCommand.CommandText =
+                        "INSERT INTO `InsertModel` (`RowGuid`, `ColumnNVarChar`) VALUES " +
+                        "(UUID(), 'NextResultAsyncTest');";
+                    await insertCommand.ExecuteNonQueryAsync();
+                }
+
+                // Act
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText =
+                        "SELECT `ColumnNVarChar` FROM `InsertModel` WHERE `ColumnNVarChar` = 'NextResultAsyncTest'; " +
+                        "SELECT COUNT(*) AS `Total` FROM `InsertModel` WHERE `ColumnNVarChar` = 'NextResultAsyncTest';";
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        // Assert - first result set
+                        Assert.IsTrue(await reader.ReadAsync());
+                        Assert.AreEqual("NextResultAsyncTest", reader.GetString(0));
+
+                        // Act & Assert - move to the second result set
+                        Assert.IsTrue(await reader.NextResultAsync());
+                        Assert.IsTrue(await reader.ReadAsync());
+                        Assert.AreEqual(1L, reader.GetInt64(0));
+
+                        // Assert - no further result sets
+                        Assert.IsFalse(await reader.NextResultAsync());
+                    }
+                }
+            }
+        }
+
+        [TestMethod]
+        public async Task TestMariaDbDataReaderIsDBNullAsyncForNullAndNonNullValues()
+        {
+            using (var connection = new MariaDbConnection(Database.ConnectionString))
+            {
+                // Setup
+                await connection.OpenAsync();
+                using (var insertCommand = connection.CreateCommand())
+                {
+                    insertCommand.CommandText =
+                        "INSERT INTO `InsertModel` (`RowGuid`, `ColumnNVarChar`) VALUES " +
+                        "(UUID(), 'IsDBNullAsyncTest'), (UUID(), NULL);";
+                    await insertCommand.ExecuteNonQueryAsync();
+                }
+
+                // Act
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText =
+                        "SELECT `ColumnNVarChar` FROM `InsertModel` " +
+                        "WHERE `ColumnNVarChar` = 'IsDBNullAsyncTest' OR `ColumnNVarChar` IS NULL " +
+                        "ORDER BY `ColumnNVarChar` IS NULL;";
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        // Assert - non-null row
+                        Assert.IsTrue(await reader.ReadAsync());
+                        Assert.IsFalse(await reader.IsDBNullAsync(0));
+
+                        // Assert - null row
+                        Assert.IsTrue(await reader.ReadAsync());
+                        Assert.IsTrue(await reader.IsDBNullAsync(0));
+                    }
+                }
+            }
+        }
     }
 }

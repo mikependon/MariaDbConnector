@@ -82,5 +82,44 @@ namespace RepoDb.Connector.MariaDb.UnitTests
             // Assert
             Assert.AreEqual(UpdateRowSource.FirstReturnedRecord, command.UpdatedRowSource);
         }
+
+        [TestMethod]
+        public async Task TestMariaDbCommandExecuteNonQueryAsyncForCommandWithoutConnectionThrowsInvalidOperationException()
+        {
+            // Setup
+            using var command = new MariaDbCommand("SELECT 1");
+
+            // Act
+            Task Act() => command.ExecuteNonQueryAsync();
+
+            // Assert
+            await Assert.ThrowsExactlyAsync<InvalidOperationException>(Act);
+        }
+
+        [TestMethod]
+        public async Task TestMariaDbCommandExecuteScalarAsyncForCommandWithoutConnectionThrowsInvalidOperationException()
+        {
+            // Setup
+            using var command = new MariaDbCommand("SELECT 1");
+
+            // Act
+            Task Act() => command.ExecuteScalarAsync();
+
+            // Assert
+            await Assert.ThrowsExactlyAsync<InvalidOperationException>(Act);
+        }
+
+        [TestMethod]
+        public async Task TestMariaDbCommandExecuteReaderAsyncForCommandWithoutConnectionThrowsInvalidOperationException()
+        {
+            // Setup
+            using var command = new MariaDbCommand("SELECT 1");
+
+            // Act
+            Task Act() => command.ExecuteReaderAsync();
+
+            // Assert
+            await Assert.ThrowsExactlyAsync<InvalidOperationException>(Act);
+        }
     }
 }
