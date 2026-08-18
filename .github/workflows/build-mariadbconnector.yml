@@ -1,0 +1,21 @@
+name: Build (MariaDB Connector)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build & Test
+    uses: ./.github/workflows/build-base.yml
+    with:
+      solution-path: src/RepoDb.Connector.MariaDbConnector/RepoDb.Connector.MariaDbConnector.slnx
+      service-image: mariadb:latest
+      service-port-mapping: "3307:3306"
+      service-health-cmd: "mariadb-admin ping -uroot -pRepoDB2026"
+      service-env: '{"MARIADB_ROOT_PASSWORD":"RepoDB2026"}'
+      env-vars: '{"REPODB_MARIADB_CONSTR_SYSTEM":"Server=127.0.0.1;Port=3307;Database=sys;User ID=root;Password=RepoDB2026;","REPODB_MARIADB_CONSTR":"Server=127.0.0.1;Port=3307;Database=RepoDb.Connector.MariaDbConnector;User ID=root;Password=RepoDB2026;AllowLoadLocalInfile=True;AllowUserVariables=True;"}'
+    secrets: inherit
