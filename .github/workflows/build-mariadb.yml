@@ -1,4 +1,4 @@
-name: Build RepoDb.Connector.MariaDb
+name: Build (MariaDB)
 
 on:
   push:

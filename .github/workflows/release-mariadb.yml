@@ -1,4 +1,4 @@
-name: Release RepoDb.Connector.MariaDb
+name: Release (MariaDB)
 
 on:
   workflow_dispatch:
