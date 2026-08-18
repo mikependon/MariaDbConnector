@@ -2,6 +2,8 @@ using MySql.Data.MySqlClient;
 using System;
 using System.Collections;
 using System.Data.Common;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace RepoDb.Connector.MariaDb
 {
@@ -189,14 +191,32 @@ namespace RepoDb.Connector.MariaDb
         public override bool IsDBNull(int ordinal) => _reader.IsDBNull(ordinal);
 
         /// <summary>
+        /// Asynchronously gets a value indicating whether the column contains non-existent or missing values.
+        /// </summary>
+        public override Task<bool> IsDBNullAsync(int ordinal, CancellationToken cancellationToken) =>
+            _reader.IsDBNullAsync(ordinal, cancellationToken);
+
+        /// <summary>
         /// Advances the data reader to the next result when reading the results of batch SQL statements.
         /// </summary>
         public override bool NextResult() => _reader.NextResult();
 
         /// <summary>
+        /// Asynchronously advances the data reader to the next result when reading the results of batch SQL statements.
+        /// </summary>
+        public override Task<bool> NextResultAsync(CancellationToken cancellationToken) =>
+            _reader.NextResultAsync(cancellationToken);
+
+        /// <summary>
         /// Advances the <see cref="MariaDbDataReader"/> to the next record.
         /// </summary>
         public override bool Read() => _reader.Read();
+
+        /// <summary>
+        /// Asynchronously advances the <see cref="MariaDbDataReader"/> to the next record.
+        /// </summary>
+        public override Task<bool> ReadAsync(CancellationToken cancellationToken) =>
+            _reader.ReadAsync(cancellationToken);
 
         /// <summary>
         /// Returns an enumerator that iterates through the <see cref="MariaDbDataReader"/>.

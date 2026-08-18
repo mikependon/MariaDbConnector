@@ -1,6 +1,8 @@
 using MySql.Data.MySqlClient;
 using System.Data;
 using System.Data.Common;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace RepoDb.Connector.MariaDb
 {
@@ -92,6 +94,17 @@ namespace RepoDb.Connector.MariaDb
         public override void Open()
         {
             _connection.Open();
+        }
+
+        /// <summary>
+        /// Asynchronously opens a database connection with the property settings specified by the <see cref="ConnectionString"/>.
+        /// </summary>
+        /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public override Task OpenAsync(
+            CancellationToken cancellationToken)
+        {
+            return _connection.OpenAsync(cancellationToken);
         }
 
         /// <summary>

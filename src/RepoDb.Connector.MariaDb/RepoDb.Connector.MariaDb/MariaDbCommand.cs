@@ -1,6 +1,8 @@
 using MySql.Data.MySqlClient;
 using System.Data;
 using System.Data.Common;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace RepoDb.Connector.MariaDb
 {
@@ -173,6 +175,28 @@ namespace RepoDb.Connector.MariaDb
         }
 
         /// <summary>
+        /// Asynchronously executes a SQL statement against the connection and returns the instance of <see cref="MariaDbDataReader"/> object.
+        /// </summary>
+        /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+        /// <returns>A task representing the asynchronous operation, containing the instance of <see cref="MariaDbDataReader"/>.</returns>
+        public new async Task<MariaDbDataReader> ExecuteReaderAsync(
+            CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                return new MariaDbDataReader(await _command.ExecuteReaderAsync(CommandBehavior.Default, cancellationToken).ConfigureAwait(false));
+            }
+            catch (MySqlException exception)
+            {
+                throw new MariaDbException(exception);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
         /// Executes a SQL statement against the connection and returns the number of rows affected.
         /// </summary>
         /// <returns>The number of rows affected.</returns>
@@ -193,6 +217,28 @@ namespace RepoDb.Connector.MariaDb
         }
 
         /// <summary>
+        /// Asynchronously executes a SQL statement against the connection and returns the number of rows affected.
+        /// </summary>
+        /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+        /// <returns>A task representing the asynchronous operation, containing the number of rows affected.</returns>
+        public override async Task<int> ExecuteNonQueryAsync(
+            CancellationToken cancellationToken)
+        {
+            try
+            {
+                return await _command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
+            }
+            catch (MySqlException exception)
+            {
+                throw new MariaDbException(exception);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
         /// Executes the query, and returns the first column of the first row in the result set. Extra columns or rows are ignored.
         /// </summary>
         /// <returns>The first column of the first row in the result set.</returns>
@@ -201,6 +247,28 @@ namespace RepoDb.Connector.MariaDb
             try
             {
                 return _command.ExecuteScalar();
+            }
+            catch (MySqlException exception)
+            {
+                throw new MariaDbException(exception);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Asynchronously executes the query, and returns the first column of the first row in the result set. Extra columns or rows are ignored.
+        /// </summary>
+        /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+        /// <returns>A task representing the asynchronous operation, containing the first column of the first row in the result set.</returns>
+        public override async Task<object> ExecuteScalarAsync(
+            CancellationToken cancellationToken)
+        {
+            try
+            {
+                return await _command.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false);
             }
             catch (MySqlException exception)
             {
@@ -237,7 +305,18 @@ namespace RepoDb.Connector.MariaDb
         /// <returns>A <see cref="MariaDbParameter"/> object.</returns>
         protected override DbParameter CreateDbParameter()
         {
-            return new MariaDbParameter(_command.CreateParameter());
+            try
+            {
+                return new MariaDbParameter(_command.CreateParameter());
+            }
+            catch (MySqlException exception)
+            {
+                throw new MariaDbException(exception);
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         /// <summary>
@@ -247,7 +326,42 @@ namespace RepoDb.Connector.MariaDb
         /// <returns>A <see cref="MariaDbDataReader"/> object.</returns>
         protected override DbDataReader ExecuteDbDataReader(CommandBehavior behavior)
         {
-            return new MariaDbDataReader(_command.ExecuteReader(behavior));
+            try
+            {
+                return new MariaDbDataReader(_command.ExecuteReader(behavior));
+            }
+            catch (MySqlException exception)
+            {
+                throw new MariaDbException(exception);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Asynchronously sends the <see cref="CommandText"/> to the connection and builds a <see cref="MariaDbDataReader"/> using one of the <see cref="CommandBehavior"/> values.
+        /// </summary>
+        /// <param name="behavior">One of the <see cref="CommandBehavior"/> values.</param>
+        /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+        /// <returns>A task representing the asynchronous operation, containing a <see cref="MariaDbDataReader"/> object.</returns>
+        protected override async Task<DbDataReader> ExecuteDbDataReaderAsync(
+            CommandBehavior behavior,
+            CancellationToken cancellationToken)
+        {
+            try
+            {
+                return new MariaDbDataReader(await _command.ExecuteReaderAsync(behavior, cancellationToken).ConfigureAwait(false));
+            }
+            catch (MySqlException exception)
+            {
+                throw new MariaDbException(exception);
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         /// <summary>
