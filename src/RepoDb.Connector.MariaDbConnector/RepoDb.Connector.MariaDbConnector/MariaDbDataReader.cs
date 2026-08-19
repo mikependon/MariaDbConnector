@@ -1,6 +1,7 @@
 using MySqlConnector;
 using System;
 using System.Collections;
+using System.Data;
 using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
@@ -169,6 +170,11 @@ namespace RepoDb.Connector.MariaDbConnector
         /// Gets the column ordinal, given the name of the column.
         /// </summary>
         public override int GetOrdinal(string name) => _reader.GetOrdinal(name);
+
+        /// <summary>
+        /// Returns a <see cref="DataTable"/> that describes the column metadata of the <see cref="MariaDbDataReader"/>.
+        /// </summary>
+        public override DataTable GetSchemaTable() => _reader.GetSchemaTable();
 
         /// <summary>
         /// Gets the value of the specified column as a <see cref="string"/> object.
