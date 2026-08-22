@@ -74,7 +74,7 @@ namespace RepoDb.Connector.MariaDbConnector.Bulk
         /// Copies all rows in the supplied <see cref="IDataReader"/> to the destination table.
         /// </summary>
         /// <param name="reader">The <see cref="IDataReader"/> that provides the rows to copy.</param>
-        public void WriteToServer(
+        public int WriteToServer(
             IDataReader reader) =>
             WriteToServerAsync(reader, CancellationToken.None).GetAwaiter().GetResult();
 
@@ -82,7 +82,7 @@ namespace RepoDb.Connector.MariaDbConnector.Bulk
         /// Copies all rows in the supplied <see cref="DbDataReader"/> to the destination table.
         /// </summary>
         /// <param name="reader">The <see cref="DbDataReader"/> that provides the rows to copy.</param>
-        public void WriteToServer(
+        public int WriteToServer(
             DbDataReader reader) =>
             WriteToServerAsync(reader, CancellationToken.None).GetAwaiter().GetResult();
 
@@ -90,7 +90,7 @@ namespace RepoDb.Connector.MariaDbConnector.Bulk
         /// Copies all rows in the supplied <see cref="DataTable"/> to the destination table.
         /// </summary>
         /// <param name="table">The <see cref="DataTable"/> that provides the rows to copy.</param>
-        public void WriteToServer(
+        public int WriteToServer(
             DataTable table) =>
             WriteToServerAsync(table, CancellationToken.None).GetAwaiter().GetResult();
 
@@ -99,7 +99,7 @@ namespace RepoDb.Connector.MariaDbConnector.Bulk
         /// </summary>
         /// <param name="table">The <see cref="DataTable"/> that provides the rows to copy.</param>
         /// <param name="rowState">A value from the <see cref="DataRowState"/> enumeration used to filter which rows are copied.</param>
-        public void WriteToServer(
+        public int WriteToServer(
             DataTable table,
             DataRowState rowState) =>
             WriteToServerAsync(table, rowState, CancellationToken.None).GetAwaiter().GetResult();
@@ -108,7 +108,7 @@ namespace RepoDb.Connector.MariaDbConnector.Bulk
         /// Copies all rows in the supplied array of <see cref="DataRow"/> objects to the destination table.
         /// </summary>
         /// <param name="rows">The array of <see cref="DataRow"/> objects that provide the rows to copy.</param>
-        public void WriteToServer(
+        public int WriteToServer(
             DataRow[] rows) =>
             WriteToServerAsync(rows, CancellationToken.None).GetAwaiter().GetResult();
 
@@ -117,16 +117,16 @@ namespace RepoDb.Connector.MariaDbConnector.Bulk
         /// </summary>
         /// <param name="reader">The <see cref="IDataReader"/> that provides the rows to copy.</param>
         /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
-        public async Task WriteToServerAsync(
+        public async Task<int> WriteToServerAsync(
             IDataReader reader,
             CancellationToken cancellationToken = default)
         {
             int ResolveSourceOrdinal(MariaDbBulkColumnMapping mapping) => reader.GetOrdinal(mapping.SourceColumn);
-
             RowsCopied = await ExecuteAsync(
                 ResolveSourceOrdinal,
                 bulkCopy => bulkCopy.WriteToServerAsync(reader, cancellationToken),
                 cancellationToken);
+            return RowsCopied;
         }
 
         /// <summary>
@@ -134,7 +134,7 @@ namespace RepoDb.Connector.MariaDbConnector.Bulk
         /// </summary>
         /// <param name="reader">The <see cref="DbDataReader"/> that provides the rows to copy.</param>
         /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
-        public Task WriteToServerAsync(
+        public Task<int> WriteToServerAsync(
             DbDataReader reader,
             CancellationToken cancellationToken = default) =>
             WriteToServerAsync((IDataReader)reader, cancellationToken);
@@ -144,7 +144,7 @@ namespace RepoDb.Connector.MariaDbConnector.Bulk
         /// </summary>
         /// <param name="table">The <see cref="DataTable"/> that provides the rows to copy.</param>
         /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
-        public async Task WriteToServerAsync(
+        public async Task<int> WriteToServerAsync(
             DataTable table,
             CancellationToken cancellationToken = default)
         {
@@ -154,6 +154,7 @@ namespace RepoDb.Connector.MariaDbConnector.Bulk
                 ResolveSourceOrdinal,
                 bulkCopy => bulkCopy.WriteToServerAsync(table, cancellationToken),
                 cancellationToken);
+            return RowsCopied;
         }
 
         /// <summary>
@@ -162,7 +163,7 @@ namespace RepoDb.Connector.MariaDbConnector.Bulk
         /// <param name="table">The <see cref="DataTable"/> that provides the rows to copy.</param>
         /// <param name="rowState">A value from the <see cref="DataRowState"/> enumeration used to filter which rows are copied.</param>
         /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
-        public Task WriteToServerAsync(
+        public Task<int> WriteToServerAsync(
             DataTable table,
             DataRowState rowState,
             CancellationToken cancellationToken = default) =>
@@ -173,14 +174,14 @@ namespace RepoDb.Connector.MariaDbConnector.Bulk
         /// </summary>
         /// <param name="rows">The array of <see cref="DataRow"/> objects that provide the rows to copy.</param>
         /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
-        public async Task WriteToServerAsync(
+        public async Task<int> WriteToServerAsync(
             DataRow[] rows,
             CancellationToken cancellationToken = default)
         {
             if (rows == null || rows.Length == 0)
             {
                 RowsCopied = 0;
-                return;
+                return RowsCopied;
             }
 
             var columnCount = rows[0].Table.Columns.Count;
@@ -192,6 +193,7 @@ namespace RepoDb.Connector.MariaDbConnector.Bulk
                 ResolveSourceOrdinal,
                 bulkCopy => bulkCopy.WriteToServerAsync(rows, columnCount, cancellationToken),
                 cancellationToken);
+            return RowsCopied;
         }
 
         #endregion
